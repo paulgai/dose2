@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ακτινοβολία και Βιολογικές Επιπτώσεις</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <h1>Ακτινοβολία και Βιολογικές Επιπτώσεις</h1>
+      </header>
+
+      <section class="panel-layout" aria-label="Κύρια διάταξη εφαρμογής">
+        <aside class="panel panel-left" aria-label="Ρυθμίσεις πειράματος">
+          <div class="panel-content">
+            <div class="panel-heading-row">
+              <h2>Ρυθμίσεις έκθεσης</h2>
+              <button
+                type="button"
+                class="info-button"
+                data-open-info="settingsInfoDialog"
+                aria-label="Πληροφορίες για τις ρυθμίσεις έκθεσης"
+                title="Πληροφορίες"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 10.6v6"></path>
+                  <circle cx="12" cy="7.4" r="0.8"></circle>
+                </svg>
+              </button>
+            </div>
+            <div class="control-card">
+              <div class="exposure-control">
+                <div class="control-heading">
+                  <label class="control-label" for="exposureRateSlider"
+                    >Ρυθμός έκθεσης</label
+                  >
+                  <output
+                    class="control-value"
+                    id="exposureRateValue"
+                    for="exposureRateSlider"
+                    >Μέτριος</output
+                  >
+                </div>
+                <input
+                  id="exposureRateSlider"
+                  class="exposure-slider"
+                  type="range"
+                  min="1"
+                  max="3"
+                  step="1"
+                  value="2"
+                />
+                <div class="control-scale" aria-hidden="true">
+                  <span class="scale-start">Χαμηλός</span>
+                  <span class="scale-middle">Μέτριος</span>
+                  <span class="scale-end">Υψηλός</span>
+                </div>
+              </div>
+
+              <div class="exposure-control">
+                <div class="control-heading">
+                  <label class="control-label" for="exposureDurationSlider"
+                    >Χρόνος έκθεσης</label
+                  >
+                  <output
+                    class="control-value"
+                    id="exposureDurationValue"
+                    for="exposureDurationSlider"
+                    >Μεσαίος</output
+                  >
+                </div>
+                <input
+                  id="exposureDurationSlider"
+                  class="exposure-slider"
+                  type="range"
+                  min="1"
+                  max="3"
+                  step="1"
+                  value="2"
+                />
+                <div class="control-scale" aria-hidden="true">
+                  <span class="scale-start">Μικρός</span>
+                  <span class="scale-middle">Μεσαίος</span>
+                  <span class="scale-end">Μεγάλος</span>
+                </div>
+              </div>
+
+              <div class="exposure-control">
+                <div class="control-heading">
+                  <label class="control-label" for="totalQuantitySlider"
+                    >Συνολική ποσότητα ακτινοβολίας</label
+                  >
+                  <output
+                    class="control-value"
+                    id="totalQuantityValue"
+                    for="totalQuantitySlider"
+                    >Μεσαία</output
+                  >
+                </div>
+                <input
+                  id="totalQuantitySlider"
+                  class="exposure-slider exposure-slider-locked"
+                  type="range"
+                  min="1"
+                  max="6"
+                  step="1"
+                  value="4"
+                  disabled
+                />
+                <div class="control-scale" aria-hidden="true">
+                  <span class="scale-start">Μικρή</span>
+                  <span class="scale-middle">Μεσαία</span>
+                  <span class="scale-end">Μεγάλη</span>
+                </div>
+              </div>
+            </div>
+            <div class="exposure-start-actions">
+              <button
+                class="irradiation-button"
+                id="irradiationButton"
+                type="button"
+              >
+                Έναρξη έκθεσης
+              </button>
+            </div>
+            <section
+              class="experiment-status-card"
+              aria-label="Κατάσταση πειράματος"
+            >
+              <div class="experiment-status-row">
+                <span>Κατάσταση</span>
+                <strong id="phaseStatus" role="status"
+                  >Έτοιμο για έκθεση</strong
+                >
+              </div>
+              <div class="experiment-status-row">
+                <span>Έκθεση</span>
+                <strong id="exposureProgressValue">Μεσαίος χρόνος</strong>
+              </div>
+              <div
+                class="exposure-progress-track"
+                id="exposureProgressTrack"
+                role="progressbar"
+                aria-label="Πρόοδος έκθεσης"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+              >
+                <span id="exposureProgressFill"></span>
+              </div>
+              <div class="experiment-status-row">
+                <span>Συσσωρευμένη ποσότητα</span>
+                <strong id="accumulatedQuantityValue"
+                  >Δεν έχει ξεκινήσει</strong
+                >
+              </div>
+              <div class="experiment-status-row">
+                <span>Χρόνος μετά την έκθεση</span>
+                <strong id="followupTimeValue">Δεν έχει ξεκινήσει</strong>
+              </div>
+            </section>
+            <div class="experiment-action-row">
+              <button
+                type="button"
+                class="experiment-action-button experiment-action-button-save"
+                id="saveExperimentBtn"
+                disabled
+              >
+                Αποθήκευση πειράματος
+              </button>
+              <button
+                type="button"
+                class="experiment-action-button"
+                id="newExperimentBtn"
+                disabled
+              >
+                Νέο πείραμα
+              </button>
+            </div>
+            <div class="button-stack" aria-label="Χειρισμός προσομοίωσης">
+              <div class="button-row button-row-main">
+                <button
+                  type="button"
+                  class="control-button control-button-primary"
+                  id="playBtn"
+                  aria-label="Έναρξη παρακολούθησης"
+                  title="Έναρξη παρακολούθησης"
+                >
+                  <span class="button-icon">▶</span>
+                </button>
+                <button
+                  type="button"
+                  class="control-button"
+                  id="pauseBtn"
+                  aria-label="Παύση παρακολούθησης"
+                  title="Παύση παρακολούθησης"
+                  disabled
+                >
+                  <span class="button-icon">⏸</span>
+                </button>
+                <button
+                  type="button"
+                  class="control-button"
+                  id="restartBtn"
+                  aria-label="Επιστροφή στην αρχή της παρακολούθησης"
+                  title="Επιστροφή στην αρχή της παρακολούθησης"
+                  disabled
+                >
+                  <span class="button-icon">↻</span>
+                </button>
+              </div>
+              <div class="button-row button-row-step">
+                <button
+                  type="button"
+                  class="control-button"
+                  id="backBtn"
+                  aria-label="Προηγούμενο χρονικό βήμα"
+                  title="Προηγούμενο χρονικό βήμα"
+                  disabled
+                >
+                  <span class="button-icon">⏮</span>
+                </button>
+                <button
+                  type="button"
+                  class="control-button"
+                  id="nextBtn"
+                  aria-label="Επόμενο χρονικό βήμα"
+                  title="Επόμενο χρονικό βήμα"
+                  disabled
+                >
+                  <span class="button-icon">⏭</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </aside>
+        <section
+          class="panel panel-center"
+          aria-label="Καμπύλη επιβίωσης και σύγκριση πειραμάτων"
+        >
+          <div class="panel-content panel-chart">
+            <div class="panel-heading-row">
+              <h2>Καμπύλη επιβίωσης</h2>
+              <button
+                type="button"
+                class="info-button"
+                data-open-info="survivalInfoDialog"
+                aria-label="Πληροφορίες για την καμπύλη επιβίωσης"
+                title="Πληροφορίες"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 10.6v6"></path>
+                  <circle cx="12" cy="7.4" r="0.8"></circle>
+                </svg>
+              </button>
+            </div>
+            <section
+              class="chart-surface"
+              aria-label="Γραφική παράσταση του αριθμού ποντικιών που επιβιώνουν μετά την έκθεση"
+            >
+              <svg
+                class="chart-svg"
+                id="impactChart"
+                viewBox="0 0 800 520"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <g id="chartGrid"></g>
+                <line
+                  class="chart-axis-line"
+                  x1="88"
+                  y1="36"
+                  x2="88"
+                  y2="448"
+                ></line>
+                <line
+                  class="chart-axis-line"
+                  x1="88"
+                  y1="448"
+                  x2="748"
+                  y2="448"
+                ></line>
+                <g id="chartTicks"></g>
+                <g id="experimentCurves"></g>
+                <circle
+                  id="experimentCurveHoverMarker"
+                  class="chart-experiment-marker"
+                  cx="88"
+                  cy="36"
+                  r="0"
+                ></circle>
+                <path id="impactArea" class="chart-area" d=""></path>
+                <path id="impactPath" class="chart-path" d=""></path>
+                <path
+                  id="impactHitPath"
+                  class="chart-current-hit"
+                  d=""
+                ></path>
+                <circle
+                  id="impactMarker"
+                  class="chart-marker"
+                  cx="88"
+                  cy="36"
+                  r="7"
+                ></circle>
+              </svg>
+              <div class="axis axis-y">
+                Αριθμός ποντικιών που επιβιώνουν
+              </div>
+              <div class="axis axis-x">Χρόνος μετά την έκθεση (μήνες)</div>
+              <div class="chart-meta">
+                <span id="timeDisplay"
+                  >t μετά την έκθεση = 0 ημέρες (0.0 μήνες)</span
+                >
+                <span id="survivorsDisplay">Επιζώντα = 100</span>
+                <span id="totalQuantityDisplay">Ποσότητα = —</span>
+              </div>
+              <div class="chart-tooltip" id="chartTooltip" hidden></div>
+            </section>
+            <section
+              class="experiments-panel"
+              aria-labelledby="experimentsPanelTitle"
+            >
+              <div class="experiments-panel-heading">
+                <div>
+                  <h3 id="experimentsPanelTitle">Σύγκριση πειραμάτων</h3>
+                  <p>
+                    Οι αποθηκευμένες καμπύλες καλύπτουν την ίδια περίοδο 24
+                    μηνών.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  class="clear-experiments-button"
+                  id="clearExperimentsBtn"
+                  disabled
+                >
+                  Διαγραφή όλων
+                </button>
+              </div>
+              <div
+                class="experiment-legend"
+                id="experimentLegend"
+                aria-label="Υπόμνημα πειραμάτων"
+              >
+                <span class="experiment-legend-empty"
+                  >Δεν υπάρχουν αποθηκευμένα πειράματα.</span
+                >
+              </div>
+              <div class="experiments-table-wrap">
+                <table class="experiments-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Πείραμα</th>
+                      <th scope="col">Ρυθμός</th>
+                      <th scope="col">Χρόνος</th>
+                      <th scope="col">Συνολική ποσότητα</th>
+                      <th scope="col"><span class="sr-only">Ενέργειες</span></th>
+                    </tr>
+                  </thead>
+                  <tbody id="experimentsTableBody">
+                    <tr class="experiments-empty-row">
+                      <td colspan="5">
+                        Αποθηκεύστε ένα πείραμα για να ξεκινήσει η σύγκριση.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div
+                class="equivalent-experiments-notice"
+                id="equivalentExperimentsNotice"
+                role="status"
+                hidden
+              >
+                <strong>Ίδια ποσότητα, διαφορετικοί συνδυασμοί</strong>
+                <div id="equivalentExperimentsContent"></div>
+              </div>
+            </section>
+          </div>
+        </section>
+        <aside class="panel panel-right" aria-label="Πληθυσμός ποντικιών">
+          <div class="panel-content">
+            <div class="panel-heading-row">
+              <h2>Πληθυσμός ποντικιών (N = 100)</h2>
+              <button
+                type="button"
+                class="info-button"
+                data-open-info="populationInfoDialog"
+                aria-label="Πληροφορίες για τον πληθυσμό ποντικιών"
+                title="Πληροφορίες"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 10.6v6"></path>
+                  <circle cx="12" cy="7.4" r="0.8"></circle>
+                </svg>
+              </button>
+            </div>
+            <div class="irradiation-stage" id="irradiationStage">
+              <div class="source-state-anchor">
+                <div
+                  class="source-state"
+                  id="sourceState"
+                  role="status"
+                >
+                  <span class="source-state-dot" aria-hidden="true"></span>
+                  <span id="sourceStateText">Πηγή ανενεργή</span>
+                </div>
+              </div>
+              <div
+                class="radiation-effects"
+                id="radiationEffects"
+                aria-hidden="true"
+              ></div>
+              <div class="radiation-source" id="radiationSource">
+                <img src="images/radioactive.png" alt="Πηγή ακτινοβολίας" />
+              </div>
+              <div
+                class="mice-grid"
+                id="miceGrid"
+                aria-label="Πλέγμα 10 επί 10 ποντικιών"
+              ></div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <dialog class="info-dialog" id="settingsInfoDialog">
+        <div class="info-dialog-header">
+          <h2>Πληροφορίες για τις ρυθμίσεις έκθεσης</h2>
+          <button
+            type="button"
+            class="info-dialog-close"
+            data-close-info
+            aria-label="Κλείσιμο πληροφοριών"
+          >
+            ×
+          </button>
+        </div>
+        <div class="info-dialog-content">
+          <p>
+            Ο ρυθμός και ο χρόνος έκθεσης είναι οι δύο ρυθμίσεις που αλλάζει ο
+            μαθητής. Η συνολική ποσότητα ακτινοβολίας υπολογίζεται αυτόματα από
+            τον συνδυασμό τους και γι’ αυτό η αντίστοιχη μπάρα είναι κλειδωμένη.
+          </p>
+          <section class="info-detail-card">
+            <h3>Ρυθμός έκθεσης</h3>
+            <p>
+              Δείχνει πόση ποσότητα ακτινοβολίας δίνεται ανά μονάδα χρόνου.
+              Όσο αυξάνεται ο ρυθμός, τόσο γρηγορότερα συσσωρεύεται η συνολική
+              ποσότητα.
+            </p>
+          </section>
+          <section class="info-detail-card">
+            <h3>Χρόνος έκθεσης</h3>
+            <p>
+              Δείχνει για πόσο χρόνο παραμένει ενεργή η πηγή. Μεγαλύτερος
+              χρόνος έκθεσης σημαίνει ότι η ακτινοβολία δίνεται για περισσότερο
+              διάστημα και επομένως αυξάνεται η συνολική ποσότητα.
+            </p>
+          </section>
+          <section class="info-detail-card">
+            <h3>Συνολική ποσότητα ακτινοβολίας</h3>
+            <p>
+              Προκύπτει από τον συνδυασμό του ρυθμού και του χρόνου έκθεσης.
+              Στην προσομοίωση κάθε ένας από τους εννέα δυνατούς συνδυασμούς
+              αντιστοιχίζεται σε προκαθορισμένη συνολική ποσότητα. Ισοδύναμοι
+              συνδυασμοί αντιστοιχίζονται στην ίδια ποσότητα και δίνουν την ίδια
+              καμπύλη.
+            </p>
+            <p class="info-formula" id="totalQuantityFormula">
+              <span id="formulaRate">Μέτριος ρυθμός</span> ×
+              <span id="formulaDuration">Μεσαίος χρόνος</span> →
+              <strong id="formulaTotal">Μεσαία ποσότητα</strong>
+            </p>
+          </section>
+          <section class="info-detail-card">
+            <h3>Ενέργεια φωτονίων</h3>
+            <p>
+              Ενέργεια φωτονίων:
+              <strong>σταθερή σε όλα τα πειράματα</strong>. Οι αλλαγές στις
+              μπάρες επηρεάζουν τον ρυθμό, τον χρόνο και τη συνολική ποσότητα,
+              όχι την ενέργεια κάθε φωτονίου.
+            </p>
+          </section>
+          <section class="info-detail-card info-detail-card-assumption">
+            <h3>Απλοποίηση του εκπαιδευτικού μοντέλου</h3>
+            <p>
+              Στο μοντέλο θεωρούμε ότι το αποτέλεσμα εξαρτάται από τη συνολική
+              ποσότητα ακτινοβολίας. Στην πραγματικότητα μπορεί να παίζουν ρόλο
+              και άλλοι παράγοντες.
+            </p>
+          </section>
+        </div>
+      </dialog>
+
+      <dialog class="info-dialog" id="survivalInfoDialog">
+        <div class="info-dialog-header">
+          <h2>Πληροφορίες για την καμπύλη επιβίωσης</h2>
+          <button
+            type="button"
+            class="info-dialog-close"
+            data-close-info
+            aria-label="Κλείσιμο πληροφοριών"
+          >
+            ×
+          </button>
+        </div>
+        <div class="info-dialog-content">
+          <p>
+            Στην προσομοίωση η επιβίωση χρησιμοποιείται ως ένας δείκτης
+            σοβαρής βιολογικής επίδρασης. Δεν αποτελεί το μοναδικό πιθανό
+            βιολογικό αποτέλεσμα της ακτινοβολίας.
+          </p>
+        </div>
+      </dialog>
+
+      <dialog class="info-dialog" id="populationInfoDialog">
+        <div class="info-dialog-header">
+          <h2>Πληροφορίες για τον πληθυσμό ποντικιών</h2>
+          <button
+            type="button"
+            class="info-dialog-close"
+            data-close-info
+            aria-label="Κλείσιμο πληροφοριών"
+          >
+            ×
+          </button>
+        </div>
+        <div class="info-dialog-content">
+          <p>
+            Στην προσομοίωση 100 ποντίκια ίδιας νεαρής ηλικίας εκτίθενται στην
+            ίδια συνολική ποσότητα ιοντίζουσας ακτινοβολίας, η οποία προκύπτει
+            από τον ρυθμό και τον χρόνο έκθεσης. Το μέσο προσδόκιμο ζωής ενός
+            ποντικιού θεωρείται περίπου 3 έτη. Μετά την έκθεση παρακολουθούμε
+            πόσα ποντίκια επιβιώνουν στον χρόνο.
+          </p>
+        </div>
+      </dialog>
+
+      <dialog class="info-dialog confirm-dialog" id="noExposureConfirmDialog">
+        <div class="info-dialog-header">
+          <h2>Παρακολούθηση χωρίς έκθεση</h2>
+          <button
+            type="button"
+            class="info-dialog-close"
+            data-close-info
+            aria-label="Κλείσιμο επιβεβαίωσης"
+          >
+            ×
+          </button>
+        </div>
+        <div class="info-dialog-content">
+          <p>
+            Δεν έχει εκτεθεί το δείγμα σε ακτινοβολία, θέλετε να συνεχίσετε;
+          </p>
+          <div class="confirm-dialog-actions">
+            <button type="button" class="confirm-button" data-no-exposure-no>
+              ΟΧΙ
+            </button>
+            <button
+              type="button"
+              class="confirm-button confirm-button-primary"
+              data-no-exposure-yes
+            >
+              ΝΑΙ
+            </button>
+          </div>
+        </div>
+      </dialog>
+
+      <dialog class="info-dialog confirm-dialog" id="newExperimentConfirmDialog">
+        <div class="info-dialog-header">
+          <h2>Νέο πείραμα</h2>
+          <button
+            type="button"
+            class="info-dialog-close"
+            data-close-info
+            aria-label="Κλείσιμο επιβεβαίωσης"
+          >
+            ×
+          </button>
+        </div>
+        <div class="info-dialog-content">
+          <p>Να αποθηκευτεί το προηγούμενο πείραμα πριν ξεκινήσουμε νέο;</p>
+          <div class="confirm-dialog-actions">
+            <button type="button" class="confirm-button" data-save-previous-no>
+              ΟΧΙ
+            </button>
+            <button
+              type="button"
+              class="confirm-button confirm-button-primary"
+              data-save-previous-yes
+            >
+              ΝΑΙ
+            </button>
+          </div>
+        </div>
+      </dialog>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
