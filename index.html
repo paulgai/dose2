@@ -10,12 +10,35 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=20260903-6" />
   </head>
   <body>
     <main class="app-shell">
       <header class="app-header">
         <h1>Ακτινοβολία και Βιολογικές Επιπτώσεις</h1>
+        <button
+          class="fullscreen-button"
+          id="fullscreenButton"
+          type="button"
+          aria-label="Πλήρης οθόνη"
+          aria-pressed="false"
+          title="Πλήρης οθόνη"
+        >
+          <svg
+            class="fullscreen-icon fullscreen-icon-enter"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"></path>
+          </svg>
+          <svg
+            class="fullscreen-icon fullscreen-icon-exit"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"></path>
+          </svg>
+        </button>
       </header>
 
       <section class="panel-layout" aria-label="Κύρια διάταξη εφαρμογής">
@@ -41,7 +64,10 @@
               <div class="exposure-control">
                 <div class="control-heading">
                   <label class="control-label" for="exposureRateSlider"
-                    >Ρυθμός έκθεσης</label
+                    >Ρυθμός έκθεσης
+                    <span class="control-label-note"
+                      >(ποσότητα ακτινοβολίας στην μονάδα του χρόνου)</span
+                    ></label
                   >
                   <output
                     class="control-value"
@@ -95,9 +121,14 @@
               </div>
 
               <div class="exposure-control">
-                <div class="control-heading">
+                <div class="control-heading control-heading-reserved">
                   <label class="control-label" for="totalQuantitySlider"
-                    >Συνολική ποσότητα ακτινοβολίας</label
+                    >Συνολική ποσότητα ακτινοβολίας
+                    <span
+                      class="control-label-note"
+                      id="totalQuantityNote"
+                      hidden
+                    ></span></label
                   >
                   <output
                     class="control-value"
@@ -130,6 +161,13 @@
                 type="button"
               >
                 Έναρξη έκθεσης
+              </button>
+              <button
+                class="no-exposure-button"
+                id="noExposureButton"
+                type="button"
+              >
+                Έναρξη παρακολούθησης χωρίς έκθεση
               </button>
             </div>
             <section
@@ -610,6 +648,6 @@
       </dialog>
     </main>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=20260903-6"></script>
   </body>
 </html>

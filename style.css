@@ -42,6 +42,11 @@ body {
 }
 
 .app-header {
+  position: relative;
+  display: flex;
+  min-height: 42px;
+  padding-right: 52px;
+  align-items: center;
   margin-bottom: 12px;
 }
 
@@ -58,6 +63,60 @@ body {
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.4;
+}
+
+.fullscreen-button {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid rgba(99, 199, 255, 0.35);
+  border-radius: 8px;
+  background: rgba(99, 199, 255, 0.08);
+  color: var(--accent);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.fullscreen-button:hover {
+  border-color: rgba(99, 199, 255, 0.72);
+  background: rgba(99, 199, 255, 0.16);
+  color: #d8f5ff;
+  transform: translateY(calc(-50% - 1px));
+}
+
+.fullscreen-button:active {
+  transform: translateY(-50%);
+}
+
+.fullscreen-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.fullscreen-icon {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.fullscreen-icon-exit,
+.fullscreen-button.is-fullscreen .fullscreen-icon-enter {
+  display: none;
+}
+
+.fullscreen-button.is-fullscreen .fullscreen-icon-exit {
+  display: block;
 }
 
 .panel-layout {
@@ -180,10 +239,14 @@ body {
 
 .control-heading {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 12px;
+}
+
+.control-heading-reserved {
+  min-height: 3.7em;
 }
 
 .control-label {
@@ -191,6 +254,13 @@ body {
   color: var(--text);
   font-size: 0.96rem;
   font-weight: 700;
+}
+
+.control-label-note {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.25;
 }
 
 .exposure-control + .exposure-control {
@@ -242,11 +312,41 @@ body {
   filter: brightness(0.98);
 }
 
+.no-exposure-button {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(43, 137, 197, 0.95);
+  border-radius: 6px;
+  background: linear-gradient(180deg, #17628f 0%, #0c3f63 100%);
+  color: #e4f7ff;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 14px 30px rgba(3, 36, 59, 0.35);
+  transition: transform 0.18s ease, filter 0.18s ease, border-color 0.18s ease;
+}
+
+.no-exposure-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+  border-color: rgba(99, 199, 255, 0.95);
+}
+
+.no-exposure-button:active {
+  transform: translateY(0);
+  filter: brightness(0.98);
+}
+
 .irradiation-button.is-firing {
   box-shadow: 0 0 0 1px rgba(158, 255, 168, 0.18), 0 0 28px rgba(115, 255, 131, 0.22);
 }
 
 .irradiation-button:disabled,
+.no-exposure-button:disabled,
 .control-button:disabled {
   cursor: not-allowed;
   filter: saturate(0.35);

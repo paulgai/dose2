@@ -11,10 +11,13 @@ const exposureDurationValue = document.getElementById(
 );
 const totalQuantitySlider = document.getElementById("totalQuantitySlider");
 const totalQuantityValue = document.getElementById("totalQuantityValue");
+const totalQuantityNote = document.getElementById("totalQuantityNote");
 const formulaRate = document.getElementById("formulaRate");
 const formulaDuration = document.getElementById("formulaDuration");
 const formulaTotal = document.getElementById("formulaTotal");
+const fullscreenButton = document.getElementById("fullscreenButton");
 const irradiationButton = document.getElementById("irradiationButton");
+const noExposureButton = document.getElementById("noExposureButton");
 const phaseStatus = document.getElementById("phaseStatus");
 const exposureProgressValue = document.getElementById(
   "exposureProgressValue",
@@ -97,6 +100,11 @@ const EXPOSURE_COMBINATIONS = new Map([
   ["3|2", { step: 5, label: "Μεσαία προς Μεγάλη", totalQuantity: 4.5 }],
   ["3|3", { step: 6, label: "Μεγάλη", totalQuantity: 10 }],
 ]);
+const TOTAL_QUANTITY_NOTES = {
+  Μικρή: "(Ποσότητα που αντιστοιχεί σε διαγνωστικές εξετάσεις)",
+  Μεγάλη:
+    "(Ποσότητα που αντιστοιχεί σε πυρηνικά ατυχήματα στους άμεσα εκτεθειμένους)",
+};
 const EXPERIMENT_COLORS = [
   "#63c7ff",
   "#ff8c9a",
@@ -159,6 +167,39 @@ const simulationState = {
   currentExperimentSaved: false,
   currentSavedExperimentId: null,
 };
+
+function syncFullscreenButton() {
+  if (!fullscreenButton) {
+    return;
+  }
+
+  const isFullscreen = Boolean(document.fullscreenElement);
+  const label = isFullscreen
+    ? "Έξοδος από πλήρη οθόνη"
+    : "Πλήρης οθόνη";
+
+  fullscreenButton.classList.toggle("is-fullscreen", isFullscreen);
+  fullscreenButton.setAttribute("aria-pressed", String(isFullscreen));
+  fullscreenButton.setAttribute("aria-label", label);
+  fullscreenButton.title = label;
+}
+
+if (fullscreenButton) {
+  fullscreenButton.addEventListener("click", async () => {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch (error) {
+      console.error("Η λειτουργία πλήρους οθόνης δεν είναι διαθέσιμη.", error);
+    }
+  });
+
+  document.addEventListener("fullscreenchange", syncFullscreenButton);
+  syncFullscreenButton();
+}
 
 function getLevelOption(options, level) {
   return options.find((option) => option.level === level) ?? options[1];
@@ -231,6 +272,10 @@ function renderExperimentPhase() {
         : isNoExposure
           ? "Δεν πραγματοποιήθηκε έκθεση"
           : "Η έκθεση ολοκληρώθηκε";
+  }
+
+  if (noExposureButton) {
+    noExposureButton.disabled = !isSetup;
   }
 
   if (newExperimentBtn) {
@@ -1346,6 +1391,12 @@ function syncExposureControls() {
     totalQuantityValue.textContent = combination.label;
   }
 
+  if (totalQuantityNote) {
+    const note = TOTAL_QUANTITY_NOTES[combination.label] ?? "";
+    totalQuantityNote.textContent = note;
+    totalQuantityNote.hidden = note === "";
+  }
+
   if (formulaRate) {
     formulaRate.textContent = `${rateOption.label} ρυθμός`;
   }
@@ -1374,6 +1425,13 @@ if (exposureRateSlider && exposureDurationSlider) {
 if (irradiationButton && exposureRateSlider && exposureDurationSlider) {
   irradiationButton.addEventListener("click", () => {
     startExposure();
+  });
+}
+
+if (noExposureButton) {
+  noExposureButton.addEventListener("click", () => {
+    startFollowupWithoutExposure();
+    startPlayback();
   });
 }
 
